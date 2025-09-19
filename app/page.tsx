@@ -2,15 +2,38 @@
 
 import { useState } from 'react'
 import { FaTwitter, FaFacebook, FaLinkedin } from 'react-icons/fa'
+import { Button, Input, SocialButton } from '@/components'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+
+  const validateForm = () => {
+    const newErrors: { email?: string; password?: string } = {}
+    
+    if (!email) {
+      newErrors.email = 'Email or username is required'
+    }
+    
+    if (!password) {
+      newErrors.password = 'Password is required'
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters'
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log('Login attempt:', { email, password })
+    
+    if (validateForm()) {
+      // Handle login logic here
+      console.log('Login attempt:', { email, password })
+      // Future: Add authentication API call
+    }
   }
 
   return (
@@ -19,12 +42,8 @@ export default function LoginPage() {
       <header className="flex justify-between items-center px-8 py-6">
         <h1 className="text-4xl font-bold text-black">Travio</h1>
         <div className="flex gap-4">
-          <button className="bg-black text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors">
-            Log in
-          </button>
-          <button className="bg-black text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors">
-            Sign up
-          </button>
+          <Button>Log in</Button>
+          <Button>Sign up</Button>
         </div>
       </header>
 
@@ -34,6 +53,7 @@ export default function LoginPage() {
           {/* Left Side - Clean yellow section */}
           <div className="flex-1 max-w-md">
             <div className="bg-travio-yellow h-96 w-full rounded-lg">
+              {/* Future: Add background image or illustration */}
             </div>
           </div>
 
@@ -44,47 +64,49 @@ export default function LoginPage() {
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Email/Username Field */}
-                <div>
-                  <label htmlFor="email" className="block text-lg font-medium text-black mb-3">
-                    Email / Username
-                  </label>
-                  <input
-                    type="text"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="username@email"
-                    className="w-full px-4 py-4 border border-gray-300 rounded-lg text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                  />
-                </div>
+                <Input
+                  id="email"
+                  type="text"
+                  label="Email / Username"
+                  placeholder="username@email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  error={errors.email}
+                />
 
                 {/* Password Field */}
-                <div>
-                  <label htmlFor="password" className="block text-lg font-medium text-black mb-3">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="***************"
-                    className="w-full px-4 py-4 border border-gray-300 rounded-lg text-lg placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                  />
-                </div>
+                <Input
+                  id="password"
+                  type="password"
+                  label="Password"
+                  placeholder="***************"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  error={errors.password}
+                />
 
                 {/* Login Button */}
-                <button
+                <Button
                   type="submit"
-                  className="w-full bg-black text-white py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-colors mt-8"
+                  size="lg"
+                  fullWidth
+                  className="mt-8"
                 >
                   Log in
-                </button>
+                </Button>
               </form>
 
               {/* Forgot Password */}
               <div className="text-center">
-                <a href="#" className="text-gray-600 hover:text-black transition-colors">
+                <a 
+                  href="#" 
+                  className="text-gray-600 hover:text-black transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    // Future: Add forgot password functionality
+                    console.log('Forgot password clicked')
+                  }}
+                >
                   Forgot your password?
                 </a>
               </div>
@@ -93,15 +115,15 @@ export default function LoginPage() {
               <div className="text-center space-y-6">
                 <p className="text-gray-600">--- or sign with socials ---</p>
                 <div className="flex justify-center gap-6">
-                  <button className="p-3 hover:bg-gray-200 rounded-full transition-colors">
+                  <SocialButton provider="twitter">
                     <FaTwitter className="w-8 h-8 text-black" />
-                  </button>
-                  <button className="p-3 hover:bg-gray-200 rounded-full transition-colors">
+                  </SocialButton>
+                  <SocialButton provider="facebook">
                     <FaFacebook className="w-8 h-8 text-black" />
-                  </button>
-                  <button className="p-3 hover:bg-gray-200 rounded-full transition-colors">
+                  </SocialButton>
+                  <SocialButton provider="linkedin">
                     <FaLinkedin className="w-8 h-8 text-black" />
-                  </button>
+                  </SocialButton>
                 </div>
               </div>
             </div>
