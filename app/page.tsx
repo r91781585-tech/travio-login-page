@@ -1,39 +1,41 @@
 'use client'
 
-import { useState } from 'react'
 import { FaTwitter, FaFacebook, FaLinkedin } from 'react-icons/fa'
 import { Button, Input, SocialButton } from '@/components'
+import { useLoginForm } from '@/hooks/useLoginForm'
+import { LoginCredentials } from '@/types'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
+  const { formData, formState, updateField, submitForm } = useLoginForm()
 
-  const validateForm = () => {
-    const newErrors: { email?: string; password?: string } = {}
-    
-    if (!email) {
-      newErrors.email = 'Email or username is required'
+  const handleLogin = async (credentials: LoginCredentials) => {
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(credentials),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        console.log('Login successful:', result.user)
+        // Future: Redirect to dashboard or handle successful login
+      } else {
+        console.error('Login failed:', result.message)
+        // Future: Show error message to user
+      }
+    } catch (error) {
+      console.error('Login error:', error)
+      // Future: Show error message to user
     }
-    
-    if (!password) {
-      newErrors.password = 'Password is required'
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters'
-    }
-    
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (validateForm()) {
-      // Handle login logic here
-      console.log('Login attempt:', { email, password })
-      // Future: Add authentication API call
-    }
+    submitForm(handleLogin)
   }
 
   return (
@@ -63,15 +65,23 @@ export default function LoginPage() {
               <h2 className="text-5xl font-bold text-black text-center mb-12">Log in</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* General Error Message */}
+                {formState.errors.general && (
+                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    {formState.errors.general}
+                  </div>
+                )}
+
                 {/* Email/Username Field */}
                 <Input
                   id="email"
                   type="text"
                   label="Email / Username"
                   placeholder="username@email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  error={errors.email}
+                  value={formData.email}
+                  onChange={(e) => updateField('email', e.target.value)}
+                  error={formState.errors.email}
+                  disabled={formState.isLoading}
                 />
 
                 {/* Password Field */}
@@ -80,9 +90,10 @@ export default function LoginPage() {
                   type="password"
                   label="Password"
                   placeholder="***************"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  error={errors.password}
+                  value={formData.password}
+                  onChange={(e) => updateField('password', e.target.value)}
+                  error={formState.errors.password}
+                  disabled={formState.isLoading}
                 />
 
                 {/* Login Button */}
@@ -91,8 +102,9 @@ export default function LoginPage() {
                   size="lg"
                   fullWidth
                   className="mt-8"
+                  disabled={formState.isLoading}
                 >
-                  Log in
+                  {formState.isLoading ? 'Logging in...' : 'Log in'}
                 </Button>
               </form>
 
