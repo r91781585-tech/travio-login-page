@@ -31,10 +31,9 @@ export default function LoginPage() {
       {/* Main Content */}
       <div className="flex items-center justify-center px-8 py-12">
         <div className="flex gap-16 items-center max-w-6xl w-full">
-          {/* Left Side - Background placeholder */}
+          {/* Left Side - Clean yellow section */}
           <div className="flex-1 max-w-md">
-            <div className="bg-travio-yellow h-96 w-full rounded-lg flex items-center justify-center">
-              <span className="text-4xl font-bold text-black">background</span>
+            <div className="bg-travio-yellow h-96 w-full rounded-lg">
             </div>
           </div>
 
