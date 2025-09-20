@@ -51,16 +51,9 @@ export default function LoginPage() {
 
       {/* Main Content */}
       <div className="flex items-center justify-center px-8 py-12">
-        <div className="flex gap-16 items-center max-w-6xl w-full">
-          {/* Left Side - Clean yellow section */}
-          <div className="flex-1 max-w-md">
-            <div className="bg-travio-yellow h-96 w-full rounded-lg">
-              {/* Future: Add background image or illustration */}
-            </div>
-          </div>
-
-          {/* Right Side - Login Form */}
-          <div className="flex-1 max-w-md">
+        <div className="flex justify-center items-center max-w-6xl w-full">
+          {/* Login Form - Centered */}
+          <div className="max-w-md w-full">
             <div className="space-y-8">
               <h2 className="text-5xl font-bold text-black text-center mb-12">Log in</h2>
               
