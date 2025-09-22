@@ -12,6 +12,12 @@ export interface LoginCredentials {
   password: string
 }
 
+export interface SignupCredentials {
+  fullName: string
+  email: string
+  password: string
+}
+
 export interface AuthResponse {
   success: boolean
   message?: string
@@ -34,6 +40,7 @@ export interface ApiResponse<T = any> {
 export interface FormState {
   isLoading: boolean
   errors: Record<string, string>
+  success?: boolean
 }
 
 // Component prop types
