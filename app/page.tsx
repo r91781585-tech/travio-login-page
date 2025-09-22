@@ -22,14 +22,19 @@ export default function LoginPage() {
 
       if (result.success) {
         console.log('Login successful:', result.user)
+        alert('Login successful! Welcome back.')
         // Future: Redirect to dashboard or handle successful login
       } else {
-        console.error('Login failed:', result.message)
-        // Future: Show error message to user
+        // Handle API errors
+        if (result.errors) {
+          throw new Error(result.errors.general || result.message || 'Login failed')
+        } else {
+          throw new Error(result.message || 'Login failed')
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error)
-      // Future: Show error message to user
+      throw error // Let the hook handle the error display
     }
   }
 
@@ -64,6 +69,11 @@ export default function LoginPage() {
                   {formState.errors.general}
                 </div>
               )}
+
+              {/* Demo Credentials Info */}
+              <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded-lg text-sm">
+                <strong>Demo Login:</strong> demo@travio.com / password123
+              </div>
 
               {/* Email/Username Field */}
               <Input
@@ -108,8 +118,7 @@ export default function LoginPage() {
                 className="text-gray-600 hover:text-black transition-colors"
                 onClick={(e) => {
                   e.preventDefault()
-                  // Future: Add forgot password functionality
-                  console.log('Forgot password clicked')
+                  alert('Forgot password functionality will be implemented soon!')
                 }}
               >
                 Forgot your password?
