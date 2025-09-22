@@ -34,15 +34,26 @@ export function useLoginForm() {
   const submitForm = async (onSubmit: (data: LoginCredentials) => Promise<void>) => {
     if (!validateForm()) return
 
-    setFormState(prev => ({ ...prev, isLoading: true }))
+    setFormState(prev => ({ ...prev, isLoading: true, errors: {} }))
     
     try {
       await onSubmit(formData)
-    } catch (error) {
+      // Success is handled by the component
+    } catch (error: any) {
       console.error('Form submission error:', error)
+      
+      // Handle different types of errors
+      let errorMessage = 'An error occurred. Please try again.'
+      
+      if (error.message) {
+        errorMessage = error.message
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
+      
       setFormState(prev => ({
         ...prev,
-        errors: { general: 'An error occurred. Please try again.' }
+        errors: { general: errorMessage }
       }))
     } finally {
       setFormState(prev => ({ ...prev, isLoading: false }))
